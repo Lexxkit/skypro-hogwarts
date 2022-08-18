@@ -21,6 +21,14 @@ class FacultyServiceTest {
     }
 
     @Test
+    void shouldReturnNullWhenCreateTheSameFaculty() {
+        out.createFaculty(GRIFFINDOR);
+        Faculty result = out.createFaculty(GRIFFINDOR);
+
+        assertThat(result).isNull();
+    }
+
+    @Test
     void shouldFindFacultyById() {
         out.createFaculty(GRIFFINDOR);
         out.createFaculty(SLYTHERIN);
@@ -44,7 +52,15 @@ class FacultyServiceTest {
         out.createFaculty(GRIFFINDOR);
         Faculty result = out.updateFaculty(UPD_GRIFFINDOR);
 
+        assertThat(result).isNotNull();
         assertThat(result).isEqualTo(UPD_GRIFFINDOR);
+    }
+
+    @Test
+    void shouldReturnNullIfFacultyNotFoundWhenUpdateFaculty() {
+        Faculty result = out.updateFaculty(UPD_GRIFFINDOR);
+
+        assertThat(result).isNull();
     }
 
     @Test

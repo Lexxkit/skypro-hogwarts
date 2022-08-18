@@ -20,17 +20,32 @@ public class FacultyService {
     }
 
     public Faculty createFaculty(Faculty faculty) {
+        if (isFacultyInMap(faculty)){
+            return null;
+        }
         faculty.setId(++idCounter);
         faculties.put(idCounter, faculty);
         return faculty;
     }
 
     public Faculty updateFaculty(Faculty faculty) {
-        faculties.put(faculty.getId(), faculty);
-        return faculty;
+        if (isFacultyInMap(faculty)) {
+            faculties.put(faculty.getId(), faculty);
+            return faculty;
+        }
+        return null;
     }
+
 
     public Faculty deleteFaculty(long id) {
         return faculties.remove(id);
+    }
+
+    private boolean isFacultyInMap(Faculty faculty) {
+        Faculty oldFaculty = faculties.get(faculty.getId());
+        if (oldFaculty != null) {
+            return true;
+        }
+        return false;
     }
 }
