@@ -72,4 +72,15 @@ class StudentServiceTest {
         assertThat(result).isEqualTo(POTTER);
         assertThat(out.findAllStudents()).hasSize(0);
     }
+
+    @Test
+    void shouldReturnStudentsWithSpecificAge() {
+        out.createStudent(POTTER);
+        out.createStudent(GRANGER);
+        out.createStudent(MALFOY);
+        Collection<Student> result = out.findStudentsByAge(AGE);
+
+        assertThat(result).hasSize(2);
+        assertThat(result).containsExactlyInAnyOrder(POTTER, GRANGER);
+    }
 }

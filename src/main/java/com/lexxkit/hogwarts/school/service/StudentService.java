@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class StudentService {
@@ -44,5 +46,9 @@ public class StudentService {
     private boolean isStudentInMap(Student student) {
         Student oldStudent = students.get(student.getId());
         return oldStudent != null;
+    }
+
+    public Collection<Student> findStudentsByAge(int age) {
+        return students.values().stream().filter(student -> student.getAge() == age).collect(Collectors.toList());
     }
 }
