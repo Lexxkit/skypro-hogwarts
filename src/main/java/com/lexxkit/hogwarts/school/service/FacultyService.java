@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 @Service
 public class FacultyService {
@@ -44,5 +45,11 @@ public class FacultyService {
     private boolean isFacultyInMap(Faculty faculty) {
         Faculty oldFaculty = faculties.get(faculty.getId());
         return oldFaculty != null;
+    }
+
+    public Collection<Faculty> findFacultyByColor(String color) {
+        return faculties.values().stream()
+                .filter(faculty -> faculty.getColor().equals(color))
+                .collect(Collectors.toList());
     }
 }

@@ -43,12 +43,14 @@ public class StudentService {
         return students.remove(id);
     }
 
+    public Collection<Student> findStudentsByAge(int age) {
+        return students.values().stream()
+                .filter(student -> student.getAge() == age)
+                .collect(Collectors.toList());
+    }
+
     private boolean isStudentInMap(Student student) {
         Student oldStudent = students.get(student.getId());
         return oldStudent != null;
-    }
-
-    public Collection<Student> findStudentsByAge(int age) {
-        return students.values().stream().filter(student -> student.getAge() == age).collect(Collectors.toList());
     }
 }

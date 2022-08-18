@@ -15,4 +15,5 @@ public class TestConstants {
     public static final Student MALFOY = new Student(0L, "Drako Malfoy", 13);
     public static final Student GRANGER = new Student(0L, "Hermiona Granger", 12);
     public static final int AGE = 12;
+    public static final String COLOR = SLYTHERIN.getColor();
 }

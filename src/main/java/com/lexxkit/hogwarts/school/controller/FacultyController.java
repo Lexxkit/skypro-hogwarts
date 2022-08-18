@@ -2,7 +2,6 @@ package com.lexxkit.hogwarts.school.controller;
 
 import com.lexxkit.hogwarts.school.model.Faculty;
 import com.lexxkit.hogwarts.school.service.FacultyService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,5 +56,10 @@ public class FacultyController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(deletedFaculty);
+    }
+
+    @GetMapping
+    public ResponseEntity<Collection<Faculty>> findFacultyByColor(@RequestParam String color) {
+        return ResponseEntity.ok(facultyService.findFacultyByColor(color));
     }
 }

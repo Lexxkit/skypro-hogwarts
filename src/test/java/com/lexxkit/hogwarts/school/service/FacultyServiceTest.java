@@ -9,7 +9,7 @@ import static com.lexxkit.hogwarts.school.service.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class FacultyServiceTest {
-    private FacultyService out = new FacultyService();
+    private final FacultyService out = new FacultyService();
 
     @Test
     void shouldCreateNewFaculty() {
@@ -70,6 +70,16 @@ class FacultyServiceTest {
 
         assertThat(result).isEqualTo(GRIFFINDOR);
         assertThat(out.findAllFaculties()).hasSize(0);
+    }
+
+    @Test
+    void shouldReturnFacultiesWithSpecificColor() {
+        out.createFaculty(GRIFFINDOR);
+        out.createFaculty(SLYTHERIN);
+        Collection<Faculty> result = out.findFacultyByColor(COLOR);
+
+        assertThat(result).hasSize(1);
+        assertThat(result).containsExactlyInAnyOrder(SLYTHERIN);
     }
 
 }
