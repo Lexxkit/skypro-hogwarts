@@ -43,9 +43,6 @@ public class FacultyService {
 
     private boolean isFacultyInMap(Faculty faculty) {
         Faculty oldFaculty = faculties.get(faculty.getId());
-        if (oldFaculty != null) {
-            return true;
-        }
-        return false;
+        return oldFaculty != null;
     }
 }
