@@ -15,7 +15,7 @@ public class StudentService {
     private long idCounter = 0;
 
     public Student createStudent(Student student) {
-        if (isStudentInMap(student)){
+        if (students.containsKey(student.getId())){
             return null;
         }
         student.setId(++idCounter);
@@ -32,7 +32,7 @@ public class StudentService {
     }
 
     public Student updateStudent(Student student) {
-        if (isStudentInMap(student)) {
+        if (students.containsKey(student.getId())) {
             students.put(student.getId(), student);
             return student;
         }
@@ -47,10 +47,5 @@ public class StudentService {
         return students.values().stream()
                 .filter(student -> student.getAge() == age)
                 .collect(Collectors.toList());
-    }
-
-    private boolean isStudentInMap(Student student) {
-        Student oldStudent = students.get(student.getId());
-        return oldStudent != null;
     }
 }

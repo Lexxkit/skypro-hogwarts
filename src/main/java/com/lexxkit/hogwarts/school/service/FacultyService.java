@@ -21,7 +21,7 @@ public class FacultyService {
     }
 
     public Faculty createFaculty(Faculty faculty) {
-        if (isFacultyInMap(faculty)){
+        if (faculties.containsKey(faculty.getId())){
             return null;
         }
         faculty.setId(++idCounter);
@@ -30,7 +30,7 @@ public class FacultyService {
     }
 
     public Faculty updateFaculty(Faculty faculty) {
-        if (isFacultyInMap(faculty)) {
+        if (faculties.containsKey(faculty.getId())) {
             faculties.put(faculty.getId(), faculty);
             return faculty;
         }
@@ -40,11 +40,6 @@ public class FacultyService {
 
     public Faculty deleteFaculty(long id) {
         return faculties.remove(id);
-    }
-
-    private boolean isFacultyInMap(Faculty faculty) {
-        Faculty oldFaculty = faculties.get(faculty.getId());
-        return oldFaculty != null;
     }
 
     public Collection<Faculty> findFacultyByColor(String color) {
