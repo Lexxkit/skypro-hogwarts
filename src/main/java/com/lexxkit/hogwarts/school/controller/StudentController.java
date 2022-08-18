@@ -4,10 +4,7 @@ import com.lexxkit.hogwarts.school.model.Student;
 import com.lexxkit.hogwarts.school.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
@@ -33,5 +30,32 @@ public class StudentController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(student);
+    }
+
+    @PostMapping
+    public ResponseEntity<Student> createStudent(@RequestBody Student student) {
+        Student createdStudent = studentService.createStudent(student);
+        if (createdStudent == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(createdStudent);
+    }
+
+    @PutMapping()
+    public ResponseEntity<Student> updateStudent(@RequestBody Student student) {
+        Student updatedStudent = studentService.updateStudent(student);
+        if (updatedStudent == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(updatedStudent);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Student> deleteStudent(@PathVariable long id) {
+        Student deletedStudent = studentService.deleteStudent(id);
+        if (deletedStudent == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(deletedStudent);
     }
 }
