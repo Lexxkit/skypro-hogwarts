@@ -58,8 +58,8 @@ public class FacultyController {
         return ResponseEntity.ok(deletedFaculty);
     }
 
-    @GetMapping
-    public ResponseEntity<Collection<Faculty>> findFacultyByColor(@RequestParam String color) {
+    @GetMapping("/findby")
+    public ResponseEntity<Collection<Faculty>> getFacultiesByColor(@RequestParam String color) {
         return ResponseEntity.ok(facultyService.findFacultyByColor(color));
     }
 }

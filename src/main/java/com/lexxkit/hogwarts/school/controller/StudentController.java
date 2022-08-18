@@ -59,8 +59,8 @@ public class StudentController {
         return ResponseEntity.ok(deletedStudent);
     }
 
-    @GetMapping
-    public ResponseEntity<Collection<Student>> findStudentsByAge(@RequestParam int age) {
+    @GetMapping("/findby")
+    public ResponseEntity<Collection<Student>> getStudentsByAge(@RequestParam int age) {
         return ResponseEntity.ok(studentService.findStudentsByAge(age));
     }
 }
