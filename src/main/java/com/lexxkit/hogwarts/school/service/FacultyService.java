@@ -1,6 +1,8 @@
 package com.lexxkit.hogwarts.school.service;
 
 import com.lexxkit.hogwarts.school.model.Faculty;
+import com.lexxkit.hogwarts.school.repository.FacultyRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -9,42 +11,35 @@ import java.util.stream.Collectors;
 
 @Service
 public class FacultyService {
-    private final HashMap<Long, Faculty> faculties = new HashMap<>();
-    private long idCounter = 0;
+
+    private final FacultyRepository facultyRepository;
+
+    public FacultyService(FacultyRepository facultyRepository) {
+        this.facultyRepository = facultyRepository;
+    }
 
     public Collection<Faculty> findAllFaculties() {
-        return faculties.values();
+        return facultyRepository.findAll();
     }
 
     public Faculty findFaculty(long id) {
-        return faculties.get(id);
+        return facultyRepository.findById(id).orElse(null);
     }
 
     public Faculty createFaculty(Faculty faculty) {
-        if (faculties.containsKey(faculty.getId())){
-            return null;
-        }
-        faculty.setId(++idCounter);
-        faculties.put(idCounter, faculty);
-        return faculty;
+        return facultyRepository.save(faculty);
     }
 
     public Faculty updateFaculty(Faculty faculty) {
-        if (faculties.containsKey(faculty.getId())) {
-            faculties.put(faculty.getId(), faculty);
-            return faculty;
-        }
-        return null;
+        return facultyRepository.save(faculty);
     }
 
 
-    public Faculty deleteFaculty(long id) {
-        return faculties.remove(id);
+    public void deleteFaculty(long id) {
+        facultyRepository.deleteById(id);
     }
 
     public Collection<Faculty> findFacultyByColor(String color) {
-        return faculties.values().stream()
-                .filter(faculty -> faculty.getColor().equals(color))
-                .collect(Collectors.toList());
+        return facultyRepository.findByColor(color);
     }
 }
