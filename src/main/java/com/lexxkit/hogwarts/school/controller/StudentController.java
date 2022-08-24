@@ -19,8 +19,18 @@ public class StudentController {
     }
 
     @GetMapping
-    public Collection<Student> getAllStudents() {
-        return studentService.findAllStudents();
+    public ResponseEntity<Collection<Student>> getAllStudents(
+            @RequestParam(required = false) Integer age,
+            @RequestParam(required = false) Integer minAge,
+            @RequestParam(required = false) Integer maxAge
+    ) {
+        if (age != null && age > 0) {
+            return ResponseEntity.ok(studentService.findStudentsByAge(age));
+        }
+        if (minAge != null && maxAge != null && minAge > 0 && minAge <= maxAge) {
+            return ResponseEntity.ok(studentService.findStudentsByAgeBetween(minAge, maxAge));
+        }
+        return ResponseEntity.ok(studentService.findAllStudents());
     }
 
     @GetMapping("{id}")
@@ -54,10 +64,5 @@ public class StudentController {
     public ResponseEntity deleteStudent(@PathVariable long id) {
         studentService.deleteStudent(id);
         return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/findby")
-    public ResponseEntity<Collection<Student>> getStudentsByAge(@RequestParam int age) {
-        return ResponseEntity.ok(studentService.findStudentsByAge(age));
     }
 }
