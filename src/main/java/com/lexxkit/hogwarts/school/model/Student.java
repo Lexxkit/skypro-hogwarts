@@ -1,5 +1,6 @@
 package com.lexxkit.hogwarts.school.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -14,8 +15,8 @@ public class Student {
     private int age;
 
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "faculty_id")
+    @JsonBackReference
     private Faculty faculty;
 
     public Student() {
