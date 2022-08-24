@@ -1,6 +1,7 @@
 package com.lexxkit.hogwarts.school.service;
 
 import com.lexxkit.hogwarts.school.model.Faculty;
+import com.lexxkit.hogwarts.school.model.Student;
 import com.lexxkit.hogwarts.school.repository.FacultyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,5 +46,10 @@ public class FacultyService {
 
     public Collection<Faculty> findFacultyByNameOrColor(String name, String color) {
         return facultyRepository.findFacultyByNameIgnoreCaseOrColorIgnoreCase(name, color);
+    }
+
+    public Collection<Student> getStudentsForFaculty(long id) {
+        Faculty faculty = findFaculty(id);
+        return faculty.getStudents();
     }
 }

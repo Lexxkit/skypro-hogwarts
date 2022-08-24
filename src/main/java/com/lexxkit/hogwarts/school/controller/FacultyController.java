@@ -1,6 +1,7 @@
 package com.lexxkit.hogwarts.school.controller;
 
 import com.lexxkit.hogwarts.school.model.Faculty;
+import com.lexxkit.hogwarts.school.model.Student;
 import com.lexxkit.hogwarts.school.service.FacultyService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -62,5 +63,10 @@ public class FacultyController {
     public ResponseEntity deleteFaculty(@PathVariable long id) {
         facultyService.deleteFaculty(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}/students")
+    public ResponseEntity<Collection<Student>> getStudentsForFaculty(@PathVariable long id) {
+        return ResponseEntity.ok(facultyService.getStudentsForFaculty(id));
     }
 }

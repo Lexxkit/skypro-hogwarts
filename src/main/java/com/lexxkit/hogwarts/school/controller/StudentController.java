@@ -1,5 +1,6 @@
 package com.lexxkit.hogwarts.school.controller;
 
+import com.lexxkit.hogwarts.school.model.Faculty;
 import com.lexxkit.hogwarts.school.model.Student;
 import com.lexxkit.hogwarts.school.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,5 +65,14 @@ public class StudentController {
     public ResponseEntity deleteStudent(@PathVariable long id) {
         studentService.deleteStudent(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}/faculty")
+    public ResponseEntity<Faculty> getFacultyForStudent(@PathVariable long id) {
+        Faculty facultyForStudent = studentService.getFacultyForStudent(id);
+        if (facultyForStudent == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(facultyForStudent);
     }
 }

@@ -1,5 +1,6 @@
 package com.lexxkit.hogwarts.school.service;
 
+import com.lexxkit.hogwarts.school.model.Faculty;
 import com.lexxkit.hogwarts.school.model.Student;
 import com.lexxkit.hogwarts.school.repository.StudentRepository;
 import org.junit.jupiter.api.Disabled;
@@ -104,5 +105,14 @@ class StudentServiceTest {
 
         assertThat(result).hasSize(2);
         assertThat(result).containsExactlyInAnyOrder(POTTER, GRANGER);
+    }
+
+    @Test
+    void shouldReturnFacultyForStudent() {
+        when(studentRepository.findById(anyLong())).thenReturn(Optional.of(POTTER));
+        Faculty result = out.getFacultyForStudent(POTTER.getId());
+
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo(GRIFFINDOR);
     }
 }

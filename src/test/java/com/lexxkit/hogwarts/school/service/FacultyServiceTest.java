@@ -1,6 +1,7 @@
 package com.lexxkit.hogwarts.school.service;
 
 import com.lexxkit.hogwarts.school.model.Faculty;
+import com.lexxkit.hogwarts.school.model.Student;
 import com.lexxkit.hogwarts.school.repository.FacultyRepository;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -103,6 +104,14 @@ class FacultyServiceTest {
 
         assertThat(result).hasSize(2);
         assertThat(result).containsExactlyInAnyOrder(SLYTHERIN, GRIFFINDOR);
+    }
+
+    @Test
+    void shouldReturnStudentsForFaculty() {
+        when(facultyRepository.findById(anyLong())).thenReturn(Optional.of(SLYTHERIN));
+        Collection<Student> result = out.getStudentsForFaculty(SLYTHERIN.getId());
+
+        assertThat(result).isNull();
     }
 
 }
