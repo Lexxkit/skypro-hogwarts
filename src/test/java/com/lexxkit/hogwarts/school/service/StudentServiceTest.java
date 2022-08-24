@@ -96,4 +96,13 @@ class StudentServiceTest {
         assertThat(result).hasSize(2);
         assertThat(result).containsExactlyInAnyOrder(POTTER, GRANGER);
     }
+
+    @Test
+    void shouldReturnStudentsWithAgeBetweenMinAndMax() {
+        when(studentRepository.findStudentsByAgeBetween(MIN_AGE, MAX_AGE)).thenReturn(List.of(POTTER, GRANGER));
+        Collection<Student> result = out.findStudentsByAgeBetween(MIN_AGE, MAX_AGE);
+
+        assertThat(result).hasSize(2);
+        assertThat(result).containsExactlyInAnyOrder(POTTER, GRANGER);
+    }
 }

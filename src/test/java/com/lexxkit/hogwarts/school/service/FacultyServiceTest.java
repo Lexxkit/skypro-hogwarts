@@ -96,4 +96,13 @@ class FacultyServiceTest {
         assertThat(result).containsExactlyInAnyOrder(SLYTHERIN);
     }
 
+    @Test
+    void shouldReturnFacultiesWithNameOrColor() {
+        when(facultyRepository.findFacultyByNameIgnoreCaseOrColorIgnoreCase(NAME, COLOR)).thenReturn(List.of(SLYTHERIN, GRIFFINDOR));
+        Collection<Faculty> result = out.findFacultyByNameOrColor(NAME, COLOR);
+
+        assertThat(result).hasSize(2);
+        assertThat(result).containsExactlyInAnyOrder(SLYTHERIN, GRIFFINDOR);
+    }
+
 }
