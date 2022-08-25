@@ -51,7 +51,7 @@ public class StudentService {
 
     public Faculty getFacultyForStudent(long id) {
         Student student = findStudent(id);
-        Optional<Faculty> faculty = Optional.of(student.getFaculty());
+        Optional<Faculty> faculty = Optional.ofNullable(student.getFaculty());
         return faculty.orElse(null);
     }
 }
