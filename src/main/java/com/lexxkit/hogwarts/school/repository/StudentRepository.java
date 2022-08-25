@@ -4,9 +4,11 @@ import com.lexxkit.hogwarts.school.model.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.Collection;
 
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long> {
-    List<Student> findByAge(int age);
+    Collection<Student> findByAge(int age);
+
+    Collection<Student> findStudentsByAgeBetween(int minAge, int maxAge);
 }

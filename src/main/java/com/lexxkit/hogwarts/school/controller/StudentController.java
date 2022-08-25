@@ -1,5 +1,6 @@
 package com.lexxkit.hogwarts.school.controller;
 
+import com.lexxkit.hogwarts.school.model.Faculty;
 import com.lexxkit.hogwarts.school.model.Student;
 import com.lexxkit.hogwarts.school.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,18 @@ public class StudentController {
     }
 
     @GetMapping
-    public Collection<Student> getAllStudents() {
-        return studentService.findAllStudents();
+    public ResponseEntity<Collection<Student>> getAllStudents(
+            @RequestParam(required = false) Integer age,
+            @RequestParam(required = false) Integer minAge,
+            @RequestParam(required = false) Integer maxAge
+    ) {
+        if (age != null && age > 0) {
+            return ResponseEntity.ok(studentService.findStudentsByAge(age));
+        }
+        if (minAge != null && maxAge != null && minAge > 0 && minAge <= maxAge) {
+            return ResponseEntity.ok(studentService.findStudentsByAgeBetween(minAge, maxAge));
+        }
+        return ResponseEntity.ok(studentService.findAllStudents());
     }
 
     @GetMapping("{id}")
@@ -56,8 +67,12 @@ public class StudentController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/findby")
-    public ResponseEntity<Collection<Student>> getStudentsByAge(@RequestParam int age) {
-        return ResponseEntity.ok(studentService.findStudentsByAge(age));
+    @GetMapping("/{id}/faculty")
+    public ResponseEntity<Faculty> getFacultyForStudent(@PathVariable long id) {
+        Faculty facultyForStudent = studentService.getFacultyForStudent(id);
+        if (facultyForStudent == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(facultyForStudent);
     }
 }

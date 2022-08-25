@@ -1,6 +1,7 @@
 package com.lexxkit.hogwarts.school.controller;
 
 import com.lexxkit.hogwarts.school.model.Faculty;
+import com.lexxkit.hogwarts.school.model.Student;
 import com.lexxkit.hogwarts.school.service.FacultyService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,16 @@ public class FacultyController {
     }
 
     @GetMapping
-    public ResponseEntity<Collection<Faculty>> getAllFaculties() {
+    public ResponseEntity<Collection<Faculty>> getAllFaculties(
+            @RequestParam(required = false) String color,
+            @RequestParam(required = false) String name
+    ) {
+        if (color != null && !color.isBlank() && (name == null || name.isBlank())) {
+            return ResponseEntity.ok(facultyService.findFacultyByColor(color));
+        }
+        if (color != null && !color.isBlank() && name != null && !name.isBlank()) {
+            return ResponseEntity.ok(facultyService.findFacultyByNameOrColor(name, color));
+        }
         return ResponseEntity.ok(facultyService.findAllFaculties());
     }
 
@@ -55,8 +65,8 @@ public class FacultyController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/findby")
-    public ResponseEntity<Collection<Faculty>> getFacultiesByColor(@RequestParam String color) {
-        return ResponseEntity.ok(facultyService.findFacultyByColor(color));
+    @GetMapping("/{id}/students")
+    public ResponseEntity<Collection<Student>> getStudentsForFaculty(@PathVariable long id) {
+        return ResponseEntity.ok(facultyService.getStudentsForFaculty(id));
     }
 }

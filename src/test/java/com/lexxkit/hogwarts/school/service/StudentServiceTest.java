@@ -1,5 +1,6 @@
 package com.lexxkit.hogwarts.school.service;
 
+import com.lexxkit.hogwarts.school.model.Faculty;
 import com.lexxkit.hogwarts.school.model.Student;
 import com.lexxkit.hogwarts.school.repository.StudentRepository;
 import org.junit.jupiter.api.Disabled;
@@ -95,5 +96,23 @@ class StudentServiceTest {
 
         assertThat(result).hasSize(2);
         assertThat(result).containsExactlyInAnyOrder(POTTER, GRANGER);
+    }
+
+    @Test
+    void shouldReturnStudentsWithAgeBetweenMinAndMax() {
+        when(studentRepository.findStudentsByAgeBetween(MIN_AGE, MAX_AGE)).thenReturn(List.of(POTTER, GRANGER));
+        Collection<Student> result = out.findStudentsByAgeBetween(MIN_AGE, MAX_AGE);
+
+        assertThat(result).hasSize(2);
+        assertThat(result).containsExactlyInAnyOrder(POTTER, GRANGER);
+    }
+
+    @Test
+    void shouldReturnFacultyForStudent() {
+        when(studentRepository.findById(anyLong())).thenReturn(Optional.of(POTTER));
+        Faculty result = out.getFacultyForStudent(POTTER.getId());
+
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo(GRIFFINDOR);
     }
 }

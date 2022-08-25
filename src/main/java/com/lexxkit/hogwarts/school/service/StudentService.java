@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -42,5 +43,15 @@ public class StudentService {
 
     public Collection<Student> findStudentsByAge(int age) {
         return studentRepository.findByAge(age);
+    }
+
+    public Collection<Student> findStudentsByAgeBetween(int minAge, int maxAge) {
+        return studentRepository.findStudentsByAgeBetween(minAge, maxAge);
+    }
+
+    public Faculty getFacultyForStudent(long id) {
+        Student student = findStudent(id);
+        Optional<Faculty> faculty = Optional.ofNullable(student.getFaculty());
+        return faculty.orElse(null);
     }
 }
