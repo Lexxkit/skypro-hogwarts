@@ -18,6 +18,18 @@ public class Avatar {
     @OneToOne
     private Student student;
 
+    public Avatar() {
+    }
+
+    public Avatar(Long id, String filePath, long fileSize, String mediaType, byte[] data, Student student) {
+        this.id = id;
+        this.filePath = filePath;
+        this.fileSize = fileSize;
+        this.mediaType = mediaType;
+        this.data = data;
+        this.student = student;
+    }
+
     public Long getId() {
         return id;
     }
@@ -88,6 +100,8 @@ public class Avatar {
                 ", filePath='" + filePath + '\'' +
                 ", fileSize=" + fileSize +
                 ", mediaType='" + mediaType + '\'' +
+                ", data=" + Arrays.toString(data) +
+                ", student=" + student +
                 '}';
     }
 }
