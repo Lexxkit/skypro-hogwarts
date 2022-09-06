@@ -68,6 +68,6 @@ public class StudentControllerTests {
     void testGetNumberOfStudents() {
         assertThat(this.restTemplate.getForObject(BASE_URL + port + "/students/number", String.class))
                 .isNotNull()
-                .contains("5");
+                .isEqualTo("5");
     }
 }
