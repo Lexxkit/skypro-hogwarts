@@ -22,4 +22,6 @@ public class TestConstants {
     public static final String NAME = GRIFFINDOR.getName().toLowerCase();
 
     public static final String BASE_URL = "http://localhost:";
+
+    public static final Integer NUMBER_OF_STUDENTS = 2;
 }

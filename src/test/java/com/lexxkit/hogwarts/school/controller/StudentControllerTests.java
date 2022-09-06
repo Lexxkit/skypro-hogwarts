@@ -63,4 +63,11 @@ public class StudentControllerTests {
                 .isNotNull()
                 .containsAnyOf("Test student");
     }
+
+    @Test
+    void testGetNumberOfStudents() {
+        assertThat(this.restTemplate.getForObject(BASE_URL + port + "/students/number", String.class))
+                .isNotNull()
+                .contains("5");
+    }
 }

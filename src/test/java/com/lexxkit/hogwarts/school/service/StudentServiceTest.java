@@ -114,4 +114,12 @@ class StudentServiceTest {
         assertThat(result).isNotNull();
         assertThat(result).isEqualTo(GRIFFINDOR);
     }
+
+    @Test
+    void shouldReturnNumberOfStudents() {
+        when(studentRepository.getNumberOfStudents()).thenReturn(NUMBER_OF_STUDENTS);
+        Integer result = out.getNumberOfStudents();
+
+        assertThat(result).isEqualTo(NUMBER_OF_STUDENTS);
+    }
 }

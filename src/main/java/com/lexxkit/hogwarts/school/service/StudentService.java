@@ -54,4 +54,8 @@ public class StudentService {
         Optional<Faculty> faculty = Optional.ofNullable(student.getFaculty());
         return faculty.orElse(null);
     }
+
+    public Integer getNumberOfStudents() {
+       return studentRepository.getNumberOfStudents();
+    }
 }

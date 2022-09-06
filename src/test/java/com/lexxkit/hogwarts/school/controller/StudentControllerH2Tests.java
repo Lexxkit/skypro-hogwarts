@@ -108,6 +108,30 @@ public class StudentControllerH2Tests {
         thenStudentNotFound(createdStudent);
     }
 
+    @Test
+    void testGetNumberOfStudents() {
+        Student student_18 = givenStudentWith("studentName3", 18);
+        Student student_25 = givenStudentWith("studentName1", 25);
+        Student student_28 = givenStudentWith("studentName2", 28);
+        Student student_32 = givenStudentWith("studentName4", 32);
+
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_18);
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_25);
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_28);
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_32);
+
+        thenNumberOfStudentsHasBeenCounted(4);
+    }
+
+    private void thenNumberOfStudentsHasBeenCounted(int numberOfStudents) {
+        URI uri = getUriBuilder().path("/number").build().toUri();
+        ResponseEntity<Integer> response = restTemplate.getForEntity(uri, Integer.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody()).isEqualTo(numberOfStudents);
+    }
+
     private void whenDeletingStudent(Student createdStudent) {
         restTemplate.delete(getUriBuilder().path("/{id}").buildAndExpand(createdStudent.getId()).toUri());
     }
