@@ -17,6 +17,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -121,6 +123,33 @@ public class StudentControllerH2Tests {
         whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_32);
 
         thenNumberOfStudentsHasBeenCounted(4);
+    }
+
+    @Test
+    void testGetAverageAgeOfStudents() {
+        Student student_18 = givenStudentWith("studentName3", 18);
+        Student student_25 = givenStudentWith("studentName1", 25);
+        Student student_28 = givenStudentWith("studentName2", 28);
+        Student student_32 = givenStudentWith("studentName4", 32);
+
+        double expectedAverageAge = Stream.of(student_18, student_25, student_28, student_32)
+                                            .mapToDouble(Student::getAge).average().orElse(0);
+
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_18);
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_25);
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_28);
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_32);
+
+        thenAverageAgeHasBeenCounted(expectedAverageAge);
+    }
+
+    private void thenAverageAgeHasBeenCounted(double expectedAverageAge) {
+        URI uri = getUriBuilder().path("/average-age").build().toUri();
+        ResponseEntity<Double> response = restTemplate.getForEntity(uri, Double.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody()).isEqualTo(expectedAverageAge);
     }
 
     private void thenNumberOfStudentsHasBeenCounted(int numberOfStudents) {
