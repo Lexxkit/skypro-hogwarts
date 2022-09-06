@@ -85,4 +85,9 @@ public class StudentController {
     public ResponseEntity<Double> getAverageAgeOfStudents() {
         return ResponseEntity.ok(studentService.getAverageAgeOfStudents());
     }
+
+    @GetMapping("/five-last")
+    public ResponseEntity<Collection<Student>> getFiveLastCreatedStudents() {
+        return ResponseEntity.ok(studentService.getFiveLastCreatedStudents());
+    }
 }

@@ -143,6 +143,43 @@ public class StudentControllerH2Tests {
         thenAverageAgeHasBeenCounted(expectedAverageAge);
     }
 
+    @Test
+    void testGetFiveLastCreatedStudents() {
+        Student student_1 = givenStudentWith("studentName3", 1);
+        Student student_2 = givenStudentWith("studentName1", 2);
+        Student student_3 = givenStudentWith("studentName2", 3);
+        Student student_4 = givenStudentWith("studentName4", 4);
+        Student student_5 = givenStudentWith("studentName4", 5);
+        Student student_6 = givenStudentWith("studentName4", 6);
+
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_1);
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_2);
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_3);
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_4);
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_5);
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_6);
+
+        thenFiveLastlyCreatedStudentsAreFound(student_6, student_5, student_4, student_3, student_2);
+    }
+
+    private void thenFiveLastlyCreatedStudentsAreFound(Student... students) {
+        URI uri = getUriBuilder().path("/five-last").build().toUri();
+
+        ResponseEntity<Collection<Student>> response = restTemplate.exchange(
+                uri,
+                HttpMethod.GET,
+                null,     //used for POST, put RequestBody here
+                new ParameterizedTypeReference<Collection<Student>>() {}   // this provide us with ResponseEntity with desired collection
+        );
+
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        Collection<Student> actualResult = response.getBody();
+        resetIds(actualResult);
+        assertThat(actualResult).containsExactlyInAnyOrder(students);
+    }
+
     private void thenAverageAgeHasBeenCounted(double expectedAverageAge) {
         URI uri = getUriBuilder().path("/average-age").build().toUri();
         ResponseEntity<Double> response = restTemplate.getForEntity(uri, Double.class);

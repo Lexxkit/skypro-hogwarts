@@ -24,4 +24,5 @@ public class TestConstants {
     public static final String BASE_URL = "http://localhost:";
 
     public static final Integer NUMBER_OF_STUDENTS = 2;
+    public static final double AVERAGE_AGE = AGE;
 }
