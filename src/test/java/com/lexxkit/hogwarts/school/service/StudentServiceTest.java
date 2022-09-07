@@ -114,4 +114,29 @@ class StudentServiceTest {
         assertThat(result).isNotNull();
         assertThat(result).isEqualTo(GRIFFINDOR);
     }
+
+    @Test
+    void shouldReturnNumberOfStudents() {
+        when(studentRepository.getNumberOfStudents()).thenReturn(NUMBER_OF_STUDENTS);
+        Integer result = out.getNumberOfStudents();
+
+        assertThat(result).isEqualTo(NUMBER_OF_STUDENTS);
+    }
+
+    @Test
+    void shouldReturnAverageAgeOfStudents() {
+        when(studentRepository.getAverageAgeOfStudents()).thenReturn(AVERAGE_AGE);
+        Double result = out.getAverageAgeOfStudents();
+
+        assertThat(result).isEqualTo(AVERAGE_AGE);
+    }
+
+    @Test
+    void shouldReturnLastlyCreatedStudents() {
+        when(studentRepository.getFiveLastCreatedStudents()).thenReturn(List.of(MALFOY));
+        Collection<Student> result = out.getFiveLastCreatedStudents();
+
+        assertThat(result).hasSize(1);
+        assertThat(result).contains(MALFOY);
+    }
 }

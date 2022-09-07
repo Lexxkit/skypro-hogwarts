@@ -2,7 +2,6 @@ package com.lexxkit.hogwarts.school.controller;
 
 import com.lexxkit.hogwarts.school.model.Avatar;
 import com.lexxkit.hogwarts.school.service.AvatarService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,6 +15,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 
 @RestController
 public class AvatarController {
@@ -49,12 +49,19 @@ public class AvatarController {
         Path path = Path.of(avatar.getFilePath());
 
         try (InputStream is = Files.newInputStream(path);
-             OutputStream os = response.getOutputStream();) {
+             OutputStream os = response.getOutputStream()) {
 
             response.setStatus(200);
             response.setContentType(avatar.getMediaType());
             response.setContentLength((int) avatar.getFileSize());
             is.transferTo(os);
         }
+    }
+
+    @GetMapping("/avatars")
+    public ResponseEntity<Collection<Avatar>> getAllAvatars(@RequestParam("page") Integer pageNum,
+                                                @RequestParam("size") Integer pageSize) {
+        Collection<Avatar> avatars = avatarService.getAllAvatars(pageNum, pageSize);
+        return ResponseEntity.ok(avatars);
     }
 }

@@ -62,7 +62,7 @@ public class StudentController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity deleteStudent(@PathVariable long id) {
+    public ResponseEntity<Void> deleteStudent(@PathVariable long id) {
         studentService.deleteStudent(id);
         return ResponseEntity.ok().build();
     }
@@ -74,5 +74,20 @@ public class StudentController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(facultyForStudent);
+    }
+
+    @GetMapping("/number")
+    public ResponseEntity<Integer> getNumberOfStudents() {
+        return ResponseEntity.ok(studentService.getNumberOfStudents());
+    }
+
+    @GetMapping("/average-age")
+    public ResponseEntity<Double> getAverageAgeOfStudents() {
+        return ResponseEntity.ok(studentService.getAverageAgeOfStudents());
+    }
+
+    @GetMapping("/five-last")
+    public ResponseEntity<Collection<Student>> getFiveLastCreatedStudents() {
+        return ResponseEntity.ok(studentService.getFiveLastCreatedStudents());
     }
 }

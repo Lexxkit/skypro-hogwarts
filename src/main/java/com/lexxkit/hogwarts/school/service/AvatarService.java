@@ -4,6 +4,7 @@ import com.lexxkit.hogwarts.school.model.Avatar;
 import com.lexxkit.hogwarts.school.model.Student;
 import com.lexxkit.hogwarts.school.repository.AvatarRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,6 +15,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
@@ -48,7 +50,7 @@ public class AvatarService {
                 InputStream is = avatarFile.getInputStream();
                 OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
                 BufferedInputStream bis = new BufferedInputStream(is, 1024);
-                BufferedOutputStream bos = new BufferedOutputStream(os, 1024);
+                BufferedOutputStream bos = new BufferedOutputStream(os, 1024)
         ) {
             bis.transferTo(bos);
         }
@@ -83,5 +85,10 @@ public class AvatarService {
 
     private String getFileExtension(String originalFilename) {
         return originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+    }
+
+    public Collection<Avatar> getAllAvatars(Integer pageNum, Integer pageSize) {
+        PageRequest pageRequest = PageRequest.of(pageNum - 1, pageSize);
+        return avatarRepository.findAll(pageRequest).getContent();
     }
 }

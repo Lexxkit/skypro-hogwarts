@@ -17,6 +17,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -106,6 +108,94 @@ public class StudentControllerH2Tests {
 
         whenDeletingStudent(createdStudent);
         thenStudentNotFound(createdStudent);
+    }
+
+    @Test
+    void testGetNumberOfStudents() {
+        Student student_18 = givenStudentWith("studentName3", 18);
+        Student student_25 = givenStudentWith("studentName1", 25);
+        Student student_28 = givenStudentWith("studentName2", 28);
+        Student student_32 = givenStudentWith("studentName4", 32);
+
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_18);
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_25);
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_28);
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_32);
+
+        thenNumberOfStudentsHasBeenCounted(4);
+    }
+
+    @Test
+    void testGetAverageAgeOfStudents() {
+        Student student_18 = givenStudentWith("studentName3", 18);
+        Student student_25 = givenStudentWith("studentName1", 25);
+        Student student_28 = givenStudentWith("studentName2", 28);
+        Student student_32 = givenStudentWith("studentName4", 32);
+
+        double expectedAverageAge = Stream.of(student_18, student_25, student_28, student_32)
+                                            .mapToDouble(Student::getAge).average().orElse(0);
+
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_18);
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_25);
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_28);
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_32);
+
+        thenAverageAgeHasBeenCounted(expectedAverageAge);
+    }
+
+    @Test
+    void testGetFiveLastCreatedStudents() {
+        Student student_1 = givenStudentWith("studentName3", 1);
+        Student student_2 = givenStudentWith("studentName1", 2);
+        Student student_3 = givenStudentWith("studentName2", 3);
+        Student student_4 = givenStudentWith("studentName4", 4);
+        Student student_5 = givenStudentWith("studentName4", 5);
+        Student student_6 = givenStudentWith("studentName4", 6);
+
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_1);
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_2);
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_3);
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_4);
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_5);
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_6);
+
+        thenFiveLastlyCreatedStudentsAreFound(student_6, student_5, student_4, student_3, student_2);
+    }
+
+    private void thenFiveLastlyCreatedStudentsAreFound(Student... students) {
+        URI uri = getUriBuilder().path("/five-last").build().toUri();
+
+        ResponseEntity<Collection<Student>> response = restTemplate.exchange(
+                uri,
+                HttpMethod.GET,
+                null,     //used for POST, put RequestBody here
+                new ParameterizedTypeReference<Collection<Student>>() {}   // this provide us with ResponseEntity with desired collection
+        );
+
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        Collection<Student> actualResult = response.getBody();
+        resetIds(actualResult);
+        assertThat(actualResult).containsExactlyInAnyOrder(students);
+    }
+
+    private void thenAverageAgeHasBeenCounted(double expectedAverageAge) {
+        URI uri = getUriBuilder().path("/average-age").build().toUri();
+        ResponseEntity<Double> response = restTemplate.getForEntity(uri, Double.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody()).isEqualTo(expectedAverageAge);
+    }
+
+    private void thenNumberOfStudentsHasBeenCounted(int numberOfStudents) {
+        URI uri = getUriBuilder().path("/number").build().toUri();
+        ResponseEntity<Integer> response = restTemplate.getForEntity(uri, Integer.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody()).isEqualTo(numberOfStudents);
     }
 
     private void whenDeletingStudent(Student createdStudent) {
