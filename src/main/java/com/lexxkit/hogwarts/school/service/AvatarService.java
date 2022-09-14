@@ -3,6 +3,8 @@ package com.lexxkit.hogwarts.school.service;
 import com.lexxkit.hogwarts.school.model.Avatar;
 import com.lexxkit.hogwarts.school.model.Student;
 import com.lexxkit.hogwarts.school.repository.AvatarRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,8 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 @Transactional
 public class AvatarService {
 
+    Logger logger = LoggerFactory.getLogger(AvatarService.class);
+
     private final int PREVIEW_WIDTH = 100;
 
     @Value("${path.to.avatars.folder}")
@@ -36,10 +40,12 @@ public class AvatarService {
     }
 
     public Avatar findAvatar(Long studentId) {
+        logger.info("Was invoked method for find avatar for student with id: {}", studentId);
         return avatarRepository.findByStudentId(studentId).orElse(new Avatar());
     }
 
     public void uploadAvatar(Long studentId, MultipartFile avatarFile) throws IOException {
+        logger.info("Was invoked method for upload avatar");
         Student student = studentService.findStudent(studentId);
         Path filePath = Path.of(avatarsDir, student + "." + getFileExtension(avatarFile.getOriginalFilename()));
 
@@ -52,6 +58,7 @@ public class AvatarService {
                 BufferedInputStream bis = new BufferedInputStream(is, 1024);
                 BufferedOutputStream bos = new BufferedOutputStream(os, 1024)
         ) {
+            logger.debug("Saving avatar to a file");
             bis.transferTo(bos);
         }
         Avatar avatar = findAvatar(studentId);
@@ -88,6 +95,7 @@ public class AvatarService {
     }
 
     public Collection<Avatar> getAllAvatars(Integer pageNum, Integer pageSize) {
+        logger.info("Was invoked method get all avatars");
         PageRequest pageRequest = PageRequest.of(pageNum - 1, pageSize);
         return avatarRepository.findAll(pageRequest).getContent();
     }
