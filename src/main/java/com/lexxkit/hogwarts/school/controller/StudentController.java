@@ -90,4 +90,14 @@ public class StudentController {
     public ResponseEntity<Collection<Student>> getFiveLastCreatedStudents() {
         return ResponseEntity.ok(studentService.getFiveLastCreatedStudents());
     }
+
+    @GetMapping("/namewithA")
+    public ResponseEntity<Collection<String>> getAllStudentsNameStartsWithACapitalize() {
+        return ResponseEntity.ok(studentService.findAllStudentsNameStartsWithACapitalize());
+    }
+
+    @GetMapping("/average-age-stream")
+    public ResponseEntity<Double> getAverageAgeOfStudentsWithStream() {
+        return ResponseEntity.ok(studentService.getAverageAgeOfStudentsWithStream());
+    }
 }
