@@ -153,4 +153,14 @@ class FacultyControllerTests {
 
         verify(facultyRepository, atLeastOnce()).deleteById(anyLong());
     }
+
+    @Test
+    void getTheLongestFacultyName() throws Exception {
+        when(facultyRepository.findAll()).thenReturn(List.of(GRIFFINDOR, SLYTHERIN));
+
+        mockMvc.perform(get("/faculties/longest-name"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(THE_LONGEST_NAME));
+
+    }
 }
