@@ -3,7 +3,11 @@ package com.lexxkit.hogwarts.school;
 import com.lexxkit.hogwarts.school.model.Faculty;
 import com.lexxkit.hogwarts.school.model.Student;
 
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public class TestConstants {
     public static final Faculty GRIFFINDOR = new Faculty(1L, "Griffindor", "red", null);
@@ -25,4 +29,14 @@ public class TestConstants {
 
     public static final Integer NUMBER_OF_STUDENTS = 2;
     public static final double AVERAGE_AGE = AGE;
+
+    public static final List<Student> STUDENTS_WITH_A = List.of(
+            new Student(1L, "Alex", 20, null),
+            new Student(1L, "Anna", 22, null)
+    );
+
+    public static final Collection<String> NAMES_A_CAPITALIZE = List.of("ALEX", "ANNA");
+
+    public static final String THE_LONGEST_NAME = Stream.of(GRIFFINDOR, SLYTHERIN).map(Faculty::getName)
+                                                    .max(Comparator.comparing(String::length)).get();
 }
