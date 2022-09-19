@@ -81,7 +81,7 @@ public class StudentService {
     }
 
     public Collection<String> findAllStudentsNameStartsWithACapitalize() {
-        logger.debug("Was invoked method for find All students with name starts with 'A' capitalize");
+        logger.info("Was invoked method for find All students with name starts with 'A' capitalize");
         return findAllStudents().stream()
                 .filter(s -> s.getName().startsWith("A"))
                 .map(s -> s.getName().toUpperCase())
@@ -90,7 +90,10 @@ public class StudentService {
     }
 
     public Double getAverageAgeOfStudentsWithStream() {
-        logger.debug("Was invoked method for calculate students average age with stream usage");
-        return findAllStudents().stream().mapToInt(Student::getAge).average().orElse(0);
+        logger.info("Was invoked method for calculate students average age with stream usage");
+        return findAllStudents().stream()
+                .mapToInt(Student::getAge)
+                .average()
+                .orElse(0);
     }
 }

@@ -60,7 +60,7 @@ public class FacultyController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity deleteFaculty(@PathVariable long id) {
+    public ResponseEntity<Void> deleteFaculty(@PathVariable long id) {
         facultyService.deleteFaculty(id);
         return ResponseEntity.ok().build();
     }
@@ -68,5 +68,14 @@ public class FacultyController {
     @GetMapping("/{id}/students")
     public ResponseEntity<Collection<Student>> getStudentsForFaculty(@PathVariable long id) {
         return ResponseEntity.ok(facultyService.getStudentsForFaculty(id));
+    }
+
+    @GetMapping("/longest-name")
+    public ResponseEntity<String> getTheLongestFacultyName() {
+        String theLongestFacultyName = facultyService.findTheLongestFacultyName();
+        if (theLongestFacultyName == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(theLongestFacultyName);
     }
 }
