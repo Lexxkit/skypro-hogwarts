@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
+import java.util.Comparator;
 
 @Service
 public class FacultyService {
@@ -66,5 +67,13 @@ public class FacultyService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no faculty with id: " + id);
         }
         return faculty.getStudents();
+    }
+
+    public String findTheLongestFacultyName() {
+        logger.info("Was invoked method for find the longest faculty name");
+        return findAllFaculties().stream()
+                .map(Faculty::getName)
+                .max(Comparator.comparing(String::length))
+                .orElse(null);
     }
 }

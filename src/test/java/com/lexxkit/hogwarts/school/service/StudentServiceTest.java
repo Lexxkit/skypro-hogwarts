@@ -139,4 +139,20 @@ class StudentServiceTest {
         assertThat(result).hasSize(1);
         assertThat(result).contains(MALFOY);
     }
+
+    @Test
+    void shouldReturnAllStudentsNameStartsWithACapitalize() {
+        when(studentRepository.findAll()).thenReturn(STUDENTS_WITH_A);
+        Collection<String> result = out.findAllStudentsNameStartsWithACapitalize();
+
+        assertThat(result).containsAll(NAMES_A_CAPITALIZE);
+    }
+
+    @Test
+    void shouldReturnAverageAgeWithStreamOfStudents() {
+        when(studentRepository.findAll()).thenReturn(STUDENTS_WITH_A);
+        Double result = out.getAverageAgeOfStudentsWithStream();
+
+        assertThat(result).isEqualTo(STUDENTS_WITH_A.stream().mapToInt(Student::getAge).average().getAsDouble());
+    }
 }

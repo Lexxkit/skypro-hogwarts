@@ -8,7 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
@@ -76,5 +78,22 @@ public class StudentService {
     public Collection<Student> getFiveLastCreatedStudents() {
         logger.info("Was invoked method get five most recent students");
         return studentRepository.getFiveLastCreatedStudents();
+    }
+
+    public Collection<String> findAllStudentsNameStartsWithACapitalize() {
+        logger.info("Was invoked method for find All students with name starts with 'A' capitalize");
+        return findAllStudents().stream()
+                .filter(s -> s.getName().startsWith("A"))
+                .map(s -> s.getName().toUpperCase())
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
+    public Double getAverageAgeOfStudentsWithStream() {
+        logger.info("Was invoked method for calculate students average age with stream usage");
+        return findAllStudents().stream()
+                .mapToInt(Student::getAge)
+                .average()
+                .orElse(0);
     }
 }

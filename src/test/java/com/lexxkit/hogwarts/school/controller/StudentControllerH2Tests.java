@@ -18,6 +18,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -145,12 +146,12 @@ public class StudentControllerH2Tests {
 
     @Test
     void testGetFiveLastCreatedStudents() {
-        Student student_1 = givenStudentWith("studentName3", 1);
-        Student student_2 = givenStudentWith("studentName1", 2);
-        Student student_3 = givenStudentWith("studentName2", 3);
+        Student student_1 = givenStudentWith("studentName1", 1);
+        Student student_2 = givenStudentWith("studentName2", 2);
+        Student student_3 = givenStudentWith("studentName3", 3);
         Student student_4 = givenStudentWith("studentName4", 4);
-        Student student_5 = givenStudentWith("studentName4", 5);
-        Student student_6 = givenStudentWith("studentName4", 6);
+        Student student_5 = givenStudentWith("studentName5", 5);
+        Student student_6 = givenStudentWith("studentName6", 6);
 
         whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_1);
         whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_2);
@@ -160,6 +161,63 @@ public class StudentControllerH2Tests {
         whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_6);
 
         thenFiveLastlyCreatedStudentsAreFound(student_6, student_5, student_4, student_3, student_2);
+    }
+
+    @Test
+    void testGetAllStudentsNameStartsWithACapitalize() {
+        Student student_1 = givenStudentWith("AstudentName1", 1);
+        Student student_2 = givenStudentWith("AstudentName2", 2);
+
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_1);
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_2);
+
+        thenCollectionOfCapitalizedNamesStartsWithAFound(student_1, student_2);
+    }
+
+    @Test
+    void testGetAverageAgeOfStudentsWithStream() {
+        Student student_18 = givenStudentWith("studentName3", 18);
+        Student student_25 = givenStudentWith("studentName1", 25);
+        Student student_28 = givenStudentWith("studentName2", 28);
+        Student student_32 = givenStudentWith("studentName4", 32);
+
+        double expectedAverageAge = Stream.of(student_18, student_25, student_28, student_32)
+                .mapToDouble(Student::getAge).average().orElse(0);
+
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_18);
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_25);
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_28);
+        whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student_32);
+
+        thenAverageAgeWithStreamHasBeenCounted(expectedAverageAge);
+    }
+
+    private void thenAverageAgeWithStreamHasBeenCounted(double expectedAverageAge) {
+        URI uri = getUriBuilder().path("/average-age-stream").build().toUri();
+        ResponseEntity<Double> response = restTemplate.getForEntity(uri, Double.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody()).isEqualTo(expectedAverageAge);
+    }
+
+    private void thenCollectionOfCapitalizedNamesStartsWithAFound(Student... students) {
+        URI uri = getUriBuilder().path("/namewithA").build().toUri();
+
+        ResponseEntity<Collection<String>> response = restTemplate.exchange(
+                uri,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<Collection<String>>() {}
+        );
+
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        Collection<String> actualResult = response.getBody();
+        assertThat(actualResult).containsAll(
+                Stream.of(students).map(s -> s.getName().toUpperCase()).collect(Collectors.toList())
+        );
     }
 
     private void thenFiveLastlyCreatedStudentsAreFound(Student... students) {

@@ -113,4 +113,12 @@ class FacultyServiceTest {
         assertThat(result).isNull();
     }
 
+    @Test
+    void shouldReturnTheLongestFacultyName() {
+        when(facultyRepository.findAll()).thenReturn(List.of(GRIFFINDOR, SLYTHERIN));
+        String result = out.findTheLongestFacultyName();
+
+        assertThat(result).isEqualTo(THE_LONGEST_NAME);
+    }
+
 }
