@@ -10,6 +10,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -154,5 +157,20 @@ class StudentServiceTest {
         Double result = out.getAverageAgeOfStudentsWithStream();
 
         assertThat(result).isEqualTo(STUDENTS_WITH_A.stream().mapToInt(Student::getAge).average().getAsDouble());
+    }
+
+    @Test
+    void shouldPrintAndStopWhenNotEnoughStudents() throws IOException {
+        when(studentRepository.findAll()).thenReturn(STUDENTS_WITH_A);
+        PrintStream previousConsole = System.out;
+
+        try (ByteArrayOutputStream newConsole = new ByteArrayOutputStream()){
+            System.setOut(new PrintStream(newConsole));
+
+            out.printStudentsNamesInThreads();
+            assertThat(newConsole.toString()).contains("Add more Students to DB.");
+
+            System.setOut(previousConsole);
+        }
     }
 }

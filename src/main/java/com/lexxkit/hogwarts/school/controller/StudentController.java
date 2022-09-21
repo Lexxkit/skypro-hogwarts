@@ -100,4 +100,16 @@ public class StudentController {
     public ResponseEntity<Double> getAverageAgeOfStudentsWithStream() {
         return ResponseEntity.ok(studentService.getAverageAgeOfStudentsWithStream());
     }
+
+    @GetMapping("/test-threads")
+    public ResponseEntity<Void> printStudentsNamesInThreads() {
+        studentService.printStudentsNamesInThreads();
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/test-synchronized-threads")
+    public ResponseEntity<Void> printStudentsNamesWithThreadsSynchronized() {
+        studentService.printStudentsNamesWithThreadsSynchronized();
+        return ResponseEntity.ok().build();
+    }
 }
