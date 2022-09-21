@@ -96,4 +96,75 @@ public class StudentService {
                 .average()
                 .orElse(0);
     }
+
+    public void printStudentsNamesInThreads() {
+        List<Student> students = studentRepository.findAll();
+        if (students.size() < 6) {
+            System.out.println("Add more Students to DB.");
+            return;
+        }
+        logger.info("Print initial order of names:");
+        for (Student student : students) {
+            System.out.println(student.getName());
+        }
+
+        logger.info("Print names in 3 threads:");
+
+        printStudentName(students, 0);
+        printStudentName(students, 1);
+
+        new Thread(() -> {
+            printStudentName(students, 2);
+            printStudentName(students, 3);
+        }).start();
+
+        new Thread(() -> {
+            printStudentName(students, 4);
+            printStudentName(students, 5);
+        }).start();
+    }
+
+    public void printStudentsNamesWithThreadsSynchronized() {
+        List<Student> students = studentRepository.findAll();
+        if (students.size() < 6) {
+            System.out.println("Add more Students to DB.");
+            return;
+        }
+
+        logger.info("Print names in 3 threads SYNCHRONIZED:");
+
+        printStudentNameSynchronized(students, 0);
+        printStudentNameSynchronized(students, 1);
+
+        new Thread(() -> {
+            printStudentNameSynchronized(students, 2);
+            printStudentNameSynchronized(students, 3);
+        }).start();
+
+        new Thread(() -> {
+            printStudentNameSynchronized(students, 4);
+            printStudentNameSynchronized(students, 5);
+        }).start();
+    }
+
+    private void printStudentName(List<Student> students, int index) {
+        System.out.println(students.get(index).getName());
+
+        slowComputation();
+    }
+
+    private synchronized void printStudentNameSynchronized(List<Student> students, int i) {
+        System.out.println(students.get(i).getName());
+
+        slowComputation();
+    }
+
+    private void slowComputation() {
+        // The code below is used SOLELY to slow down the computation process
+        // to show how Threads work.
+        String s = "";
+        for (int i = 0; i < 50_000; i++) {
+            s += i;
+        }
+    }
 }
