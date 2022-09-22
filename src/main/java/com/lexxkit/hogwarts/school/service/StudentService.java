@@ -17,6 +17,8 @@ public class StudentService {
 
     private final Logger logger = LoggerFactory.getLogger(StudentService.class);
 
+    private final Object syncFlag = new Object();
+
     private final StudentRepository studentRepository;
 
     public StudentService(StudentRepository studentRepository) {
@@ -100,12 +102,12 @@ public class StudentService {
     public void printStudentsNamesInThreads() {
         List<Student> students = studentRepository.findAll();
         if (students.size() < 6) {
-            System.out.println("Add more Students to DB.");
+            logger.warn("Add more Students to DB.");
             return;
         }
         logger.info("Print initial order of names:");
         for (Student student : students) {
-            System.out.println(student.getName());
+            logger.info(student.getName());
         }
 
         logger.info("Print names in 3 threads:");
@@ -127,34 +129,34 @@ public class StudentService {
     public void printStudentsNamesWithThreadsSynchronized() {
         List<Student> students = studentRepository.findAll();
         if (students.size() < 6) {
-            System.out.println("Add more Students to DB.");
+            logger.warn("Add more Students to DB.");
             return;
         }
 
         logger.info("Print names in 3 threads SYNCHRONIZED:");
 
-        printStudentNameSynchronized(students, 0);
-        printStudentNameSynchronized(students, 1);
+        printStudentNameInPairsSynchronized(students, 0);
 
         new Thread(() -> {
-            printStudentNameSynchronized(students, 2);
-            printStudentNameSynchronized(students, 3);
+            printStudentNameInPairsSynchronized(students, 2);
         }).start();
 
         new Thread(() -> {
-            printStudentNameSynchronized(students, 4);
-            printStudentNameSynchronized(students, 5);
+            printStudentNameInPairsSynchronized(students, 4);
         }).start();
     }
 
     private void printStudentName(List<Student> students, int index) {
-        System.out.println(students.get(index).getName());
+        logger.info(students.get(index).getName());
 
         slowComputation();
     }
 
-    private synchronized void printStudentNameSynchronized(List<Student> students, int i) {
-        System.out.println(students.get(i).getName());
+    private void printStudentNameInPairsSynchronized(List<Student> students, int startIndex) {
+        synchronized (students) {
+            logger.info(students.get(startIndex).getName());
+            logger.info(students.get(startIndex + 1).getName());
+        }
 
         slowComputation();
     }
